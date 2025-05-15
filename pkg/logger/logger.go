@@ -22,9 +22,6 @@ func NewLogger(opts ...ConfigOption) *Logger {
 		panic(err)
 	}
 
-	// TODO можно ли как-то аккуратно вытащить из конфига, чтобы тесты не поехали? относительный путь меняется при запуске тестов.
-	l = l.With(zap.String("app", "cart"))
-
 	return &Logger{
 		logger: l,
 	}
@@ -47,6 +44,10 @@ func Close() error {
 	}
 
 	return nil
+}
+
+func WithNameApp(ctx context.Context, appName string) {
+	logger.logger = logger.logger.With(zap.String("app", appName))
 }
 
 func (l *Logger) Info(ctx context.Context, m string) {

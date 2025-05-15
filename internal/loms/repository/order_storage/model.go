@@ -11,5 +11,3 @@ type Item struct {
 	SkuID    int64
 	Quantity uint16
 }
-
-type Orders map[int64]*Order

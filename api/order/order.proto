@@ -5,34 +5,34 @@ package order;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/openapiv2.proto";
-import "validate/validate.proto";
+import "buf/validate/validate.proto";
 
 option go_package = "/pkg/api/order";
 
 service Order {
   rpc Create(OrderCreateRequest) returns (OrderCreateResponse) {
     option(google.api.http) = {
-      post: "/v1/order/create";
+      post: "/order/create";
       body: "*";
     };
   }
 
   rpc Info(OrderInfoRequest) returns (OrderInfoResponse) {
     option(google.api.http) = {
-      get: "/v1/order/info/{order_id}";
+      get: "/order/info/{order_id}";
     };
   }
 
   rpc Cancel(OrderCancelRequest) returns (google.protobuf.Empty) {
     option(google.api.http) = {
-      post: "/v1/order/cancel";
+      post: "/order/cancel";
       body: "*"
     };
   }
 
   rpc Pay(OrderPayRequest) returns (google.protobuf.Empty) {
     option(google.api.http) = {
-      post: "/v1/order/pay";
+      post: "/order/pay";
       body: "*"
     };
   }
@@ -40,11 +40,11 @@ service Order {
 
 message OrderCreateRequest {
   message Item {
-    int64 sku = 1 [json_name = "sku", (validate.rules).int64.gt = 0];
-    uint64 count = 2 [json_name = "count", (validate.rules).uint64.gt = 0];
+    int64 sku = 1 [json_name = "sku", (buf.validate.field).int64.gt = 0];
+    uint64 count = 2 [json_name = "count", (buf.validate.field).uint64.gt = 0];
   }
-  int64 user = 1 [json_name = "user", (validate.rules).int64.gt = 0];
-  repeated Item items = 2 [json_name = "items", (validate.rules).repeated.min_items = 1];
+  int64 user = 1 [json_name = "user", (buf.validate.field).int64.gt = 0];
+  repeated Item items = 2 [json_name = "items", (buf.validate.field).repeated.min_items = 1];
 }
 
 message OrderCreateResponse {
@@ -52,7 +52,7 @@ message OrderCreateResponse {
 }
 
 message OrderInfoRequest {
-  int64 order_id = 1 [json_name = "order_id", (validate.rules).int64.gt = 0];
+  int64 order_id = 1 [json_name = "order_id", (buf.validate.field).int64.gt = 0];
 }
 
 message OrderInfoResponse {
@@ -67,10 +67,10 @@ message OrderInfoResponse {
 }
 
 message OrderCancelRequest {
-  int64 order_id = 1 [json_name = "order_id", (validate.rules).int64.gt = 0];
+  int64 order_id = 1 [json_name = "order_id", (buf.validate.field).int64.gt = 0];
 }
 
 message OrderPayRequest {
-  int64 order_id = 1 [json_name = "order_id", (validate.rules).int64.gt = 0];
+  int64 order_id = 1 [json_name = "order_id", (buf.validate.field).int64.gt = 0];
 }
 

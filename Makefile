@@ -11,12 +11,11 @@ PHONY: .proto-generate
 	$(info Installing binary dependencies...)
 	GOBIN=$(LOCAL_BIN) go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6 && \
     GOBIN=$(LOCAL_BIN) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1 && \
-	GOBIN=$(LOCAL_BIN) go install github.com/envoyproxy/protoc-gen-validate@v1.2.1 && \
 	GOBIN=$(LOCAL_BIN) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@v2.26.3 && \
 	GOBIN=$(LOCAL_BIN) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.26.3 && \
 	GOBIN=$(LOCAL_BIN) go install github.com/go-swagger/go-swagger/cmd/swagger@v0.31
 
-.vendor-proto: .vendor-rm  vendor-proto/google/protobuf vendor-proto/validate vendor-proto/google/api vendor-proto/protoc-gen-openapiv2/options
+.vendor-proto: .vendor-rm  vendor-proto/google/protobuf vendor-proto/buf/validate vendor-proto/google/api vendor-proto/protoc-gen-openapiv2/options
 	go mod tidy
 
 .PHONY: .vendor-rm
@@ -34,15 +33,15 @@ vendor-proto/google/protobuf:
 	mv vendor-proto/protobuf/src/google/protobuf vendor-proto/google
 	rm -rf vendor-proto/protobuf
 
-# Устанавливаем proto описания validate
-vendor-proto/validate:
-	git clone -b main --single-branch --depth=2 --filter=tree:0 \
-		https://github.com/bufbuild/protoc-gen-validate vendor-proto/tmp && \
+# Устанавливаем proto описания buf/validate для protovalidate
+vendor-proto/buf/validate:
+	git clone -b main --single-branch --depth=1 --filter=tree:0 \
+		https://github.com/bufbuild/protovalidate vendor-proto/tmp && \
 		cd vendor-proto/tmp && \
-		git sparse-checkout set --no-cone validate &&\
+		git sparse-checkout set --no-cone proto/protovalidate/buf/validate &&\
 		git checkout
-		mkdir -p vendor-proto/validate
-		mv vendor-proto/tmp/validate vendor-proto/
+		mkdir -p vendor-proto/buf
+		mv vendor-proto/tmp/proto/protovalidate/buf vendor-proto/
 		rm -rf vendor-proto/tmp
 
 # Устанавливается proto описания google/googleapis
@@ -67,7 +66,7 @@ vendor-proto/protoc-gen-openapiv2/options:
 	mv vendor-proto/grpc-ecosystem/protoc-gen-openapiv2/options vendor-proto/protoc-gen-openapiv2
 	rm -rf vendor-proto/grpc-ecosystem
 
-ORDER_API_PROTO_PATH:=api/order/v1
+ORDER_API_PROTO_PATH:=api/order
 PHONY: .order-api-generate
 .order-api-generate:
 	rm -rf pkg/${ORDER_API_PROTO_PATH}
@@ -81,8 +80,6 @@ PHONY: .order-api-generate
 	--plugin=protoc-gen-go-grpc=$(LOCAL_BIN)/protoc-gen-go-grpc \
 	--go-grpc_out pkg/${ORDER_API_PROTO_PATH} \
 	--go-grpc_opt paths=source_relative \
-	--plugin=protoc-gen-validate=$(LOCAL_BIN)/protoc-gen-validate \
-	--validate_out="lang=go,paths=source_relative:pkg/${ORDER_API_PROTO_PATH}" \
 	--plugin=protoc-gen-grpc-gateway=$(LOCAL_BIN)/protoc-gen-grpc-gateway \
 	--grpc-gateway_out pkg/${ORDER_API_PROTO_PATH} \
 	--grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true \
@@ -107,8 +104,6 @@ PHONY: .stock-api-generate
 	--plugin=protoc-gen-go-grpc=$(LOCAL_BIN)/protoc-gen-go-grpc \
 	--go-grpc_out pkg/${STOCK_API_PROTO_PATH} \
 	--go-grpc_opt paths=source_relative \
-	--plugin=protoc-gen-validate=$(LOCAL_BIN)/protoc-gen-validate \
-	--validate_out="lang=go,paths=source_relative:pkg/${STOCK_API_PROTO_PATH}" \
 	--plugin=protoc-gen-grpc-gateway=$(LOCAL_BIN)/protoc-gen-grpc-gateway \
 	--grpc-gateway_out pkg/${STOCK_API_PROTO_PATH} \
 	--grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true \
@@ -119,4 +114,3 @@ PHONY: .stock-api-generate
 
 .PHONY: generate-apis
 generate-apis: .stock-api-generate .order-api-generate
-

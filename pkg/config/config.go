@@ -8,6 +8,7 @@ import (
 type Config struct {
 	AppName  string `yaml:"app_name"`
 	HttpPort string `yaml:"http_port"`
+	GrpcPort string `yaml:"grpc_port"`
 }
 
 func MustLoad() *Config {

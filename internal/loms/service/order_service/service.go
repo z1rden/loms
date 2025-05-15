@@ -2,11 +2,12 @@ package order_service
 
 import (
 	"context"
+	"loms/internal/loms/model"
 	"loms/internal/loms/repository/order_storage"
 )
 
 type Service interface {
-	Create()
+	Create(ctx context.Context, userID int64, items []*model.Item) (int64, error)
 }
 
 type service struct {
@@ -14,7 +15,7 @@ type service struct {
 }
 
 func NewService(ctx context.Context, storage order_storage.Storage) Service {
-	return service{
+	return &service{
 		storage: storage,
 	}
 }

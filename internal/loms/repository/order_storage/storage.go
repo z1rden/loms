@@ -11,12 +11,12 @@ type Storage interface {
 
 type storage struct {
 	sync.RWMutex
-	orders Orders
+	orders map[int64]*Order
 }
 
 func NewStorage(ctx context.Context) Storage {
 	return &storage{
-		orders: Orders{},
+		orders: map[int64]*Order{},
 	}
 }
 

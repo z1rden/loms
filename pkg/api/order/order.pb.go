@@ -7,7 +7,7 @@
 package order
 
 import (
-	_ "github.com/envoyproxy/protoc-gen-validate/validate"
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -421,17 +421,17 @@ var File_order_proto protoreflect.FileDescriptor
 
 const file_order_proto_rawDesc = "" +
 	"\n" +
-	"\vorder.proto\x12\x05order\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a,protoc-gen-openapiv2/options/openapiv2.proto\x1a\x17validate/validate.proto\"\xb3\x01\n" +
+	"\vorder.proto\x12\x05order\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a,protoc-gen-openapiv2/options/openapiv2.proto\x1a\x1bbuf/validate/validate.proto\"\xb3\x01\n" +
 	"\x12OrderCreateRequest\x12\x1b\n" +
-	"\x04user\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x04user\x12>\n" +
-	"\x05items\x18\x02 \x03(\v2\x1e.order.OrderCreateRequest.ItemB\b\xfaB\x05\x92\x01\x02\b\x01R\x05items\x1a@\n" +
+	"\x04user\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\x04user\x12>\n" +
+	"\x05items\x18\x02 \x03(\v2\x1e.order.OrderCreateRequest.ItemB\b\xbaH\x05\x92\x01\x02\b\x01R\x05items\x1a@\n" +
 	"\x04Item\x12\x19\n" +
-	"\x03sku\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x03sku\x12\x1d\n" +
-	"\x05count\x18\x02 \x01(\x04B\a\xfaB\x042\x02 \x00R\x05count\"1\n" +
+	"\x03sku\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\x03sku\x12\x1d\n" +
+	"\x05count\x18\x02 \x01(\x04B\a\xbaH\x042\x02 \x00R\x05count\"1\n" +
 	"\x13OrderCreateResponse\x12\x1a\n" +
 	"\border_id\x18\x01 \x01(\x03R\border_id\"7\n" +
 	"\x10OrderInfoRequest\x12#\n" +
-	"\border_id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\border_id\"\xa4\x01\n" +
+	"\border_id\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\border_id\"\xa4\x01\n" +
 	"\x11OrderInfoResponse\x12\x16\n" +
 	"\x06status\x18\x01 \x01(\tR\x06status\x12\x12\n" +
 	"\x04user\x18\x02 \x01(\x03R\x04user\x123\n" +
@@ -440,14 +440,15 @@ const file_order_proto_rawDesc = "" +
 	"\x03sku\x18\x01 \x01(\x03R\x03sku\x12\x14\n" +
 	"\x05count\x18\x02 \x01(\x04R\x05count\"9\n" +
 	"\x12OrderCancelRequest\x12#\n" +
-	"\border_id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\border_id\"6\n" +
+	"\border_id\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\border_id\"6\n" +
 	"\x0fOrderPayRequest\x12#\n" +
-	"\border_id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\border_id2\xee\x02\n" +
-	"\x05Order\x12\\\n" +
-	"\x06Create\x12\x19.order.OrderCreateRequest\x1a\x1a.order.OrderCreateResponse\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/v1/order/create\x12\\\n" +
-	"\x04Info\x12\x17.order.OrderInfoRequest\x1a\x18.order.OrderInfoResponse\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/order/info/{order_id}\x12X\n" +
-	"\x06Cancel\x12\x19.order.OrderCancelRequest\x1a\x16.google.protobuf.Empty\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/v1/order/cancel\x12O\n" +
-	"\x03Pay\x12\x16.order.OrderPayRequest\x1a\x16.google.protobuf.Empty\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/v1/order/payB\x10Z\x0e/pkg/api/orderb\x06proto3"
+	"\border_id\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\border_id2\xe2\x02\n" +
+	"\x05Order\x12Y\n" +
+	"\x06Create\x12\x19.order.OrderCreateRequest\x1a\x1a.order.OrderCreateResponse\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/order/create\x12Y\n" +
+	"\x04Info\x12\x17.order.OrderInfoRequest\x1a\x18.order.OrderInfoResponse\"\x1e\x82\xd3\xe4\x93\x02\x18\x12\x16/order/info/{order_id}\x12U\n" +
+	"\x06Cancel\x12\x19.order.OrderCancelRequest\x1a\x16.google.protobuf.Empty\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/order/cancel\x12L\n" +
+	"\x03Pay\x12\x16.order.OrderPayRequest\x1a\x16.google.protobuf.Empty\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
+	"/order/payB\x10Z\x0e/pkg/api/orderb\x06proto3"
 
 var (
 	file_order_proto_rawDescOnce sync.Once
