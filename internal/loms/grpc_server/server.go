@@ -4,14 +4,17 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
-	order_api "loms/internal/loms/api/order"
 	"net"
 )
+
+type API interface {
+	RegisterGrpcServer(s *grpc.Server)
+}
 
 type Server interface {
 	Run() error
 	Stop() error
-	RegisterApi(api []order_api.API) error
+	RegisterApi(api []API) error
 }
 
 type server struct {
@@ -50,7 +53,7 @@ func (s *server) Stop() error {
 	return nil
 }
 
-func (s *server) RegisterApi(api []order_api.API) error {
+func (s *server) RegisterApi(api []API) error {
 	for _, sApi := range api {
 		sApi.RegisterGrpcServer(s.grpcServer)
 	}

@@ -7,6 +7,7 @@ import (
 
 type Storage interface {
 	Create(ctx context.Context, userID int64, items []*Item) (int64, error)
+	SetStatus(ctx context.Context, userID int64, status string) error
 }
 
 type storage struct {
@@ -18,15 +19,4 @@ func NewStorage(ctx context.Context) Storage {
 	return &storage{
 		orders: map[int64]*Order{},
 	}
-}
-
-func (s *storage) getNextID() int64 {
-	var maxID int64
-	for orderID := range s.orders {
-		if orderID > maxID {
-			maxID = orderID
-		}
-	}
-	maxID++
-	return maxID
 }

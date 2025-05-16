@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	order_api "loms/internal/loms/api/order"
 	"loms/internal/loms/grpc_server"
 	"loms/internal/loms/http_server"
 	"loms/internal/loms/service_provider"
@@ -46,9 +45,10 @@ func (s *service) Run() error {
 	defer closer.Wait()
 
 	orderApi := s.serviceProvider.GetOrderAPI(s.ctx)
+	stockApi := s.serviceProvider.GetStockAPI(s.ctx)
 
 	grpcServer := grpc_server.NewServer(s.ctx, s.cfg.GrpcPort)
-	err := grpcServer.RegisterApi([]order_api.API{orderApi})
+	err := grpcServer.RegisterApi([]grpc_server.API{orderApi, stockApi})
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (s *service) Run() error {
 	if err != nil {
 		return err
 	}
-	err = httpServer.RegisterApi([]order_api.API{orderApi})
+	err = httpServer.RegisterApi([]http_server.API{orderApi, stockApi})
 	if err != nil {
 		return err
 	}

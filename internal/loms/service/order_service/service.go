@@ -4,6 +4,7 @@ import (
 	"context"
 	"loms/internal/loms/model"
 	"loms/internal/loms/repository/order_storage"
+	"loms/internal/loms/repository/stock_storage"
 )
 
 type Service interface {
@@ -11,11 +12,13 @@ type Service interface {
 }
 
 type service struct {
-	storage order_storage.Storage
+	orderStorage order_storage.Storage
+	stockStorage stock_storage.Storage
 }
 
-func NewService(ctx context.Context, storage order_storage.Storage) Service {
+func NewService(ctx context.Context, orderStorage order_storage.Storage, stockStorage stock_storage.Storage) Service {
 	return &service{
-		storage: storage,
+		orderStorage: orderStorage,
+		stockStorage: stockStorage,
 	}
 }

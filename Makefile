@@ -90,7 +90,7 @@ PHONY: .order-api-generate
 	
 
 
-STOCK_API_PROTO_PATH:=api/stock/v1
+STOCK_API_PROTO_PATH:=api/stock
 PHONY: .stock-api-generate
 .stock-api-generate:
 	rm -rf pkg/${STOCK_API_PROTO_PATH}

@@ -6,9 +6,21 @@ import (
 )
 
 func (s *service) Create(ctx context.Context, userID int64, items []*model.Item) (int64, error) {
-	orderID, err := s.storage.Create(ctx, userID, ToOrderStorageItems(items))
+	orderID, err := s.orderStorage.Create(ctx, userID, ToOrderStorageItems(items))
 	if err != nil {
 		return 0, err
+	}
+
+	if err := s.stockStorage.Reserve(ctx, ToStockStorageItems(ctx, items)); err != nil {
+		if err := s.orderStorage.SetStatus(ctx, orderID, model.OrderStatusFailed); err != nil {
+			return 0, err
+		}
+
+		return 0, err
+	} else {
+		if err := s.orderStorage.SetStatus(ctx, orderID, model.OrderStatusAwatingPayment); err != nil {
+			return 0, err
+		}
 	}
 
 	return orderID, nil

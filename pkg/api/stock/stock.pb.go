@@ -7,7 +7,7 @@
 package stock
 
 import (
-	_ "github.com/envoyproxy/protoc-gen-validate/validate"
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -117,13 +117,13 @@ var File_stock_proto protoreflect.FileDescriptor
 
 const file_stock_proto_rawDesc = "" +
 	"\n" +
-	"\vstock.proto\x12\x05stock\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17validate/validate.proto\x1a,protoc-gen-openapiv2/options/openapiv2.proto\"0\n" +
+	"\vstock.proto\x12\x05stock\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bbuf/validate/validate.proto\x1a,protoc-gen-openapiv2/options/openapiv2.proto\"0\n" +
 	"\x10StockInfoRequest\x12\x1c\n" +
-	"\x03sku\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x06sku_id\")\n" +
+	"\x03sku\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\x06sku_id\")\n" +
 	"\x11StockInfoResponse\x12\x14\n" +
-	"\x05count\x18\x01 \x01(\x04R\x05count2`\n" +
-	"\x05Stock\x12W\n" +
-	"\x04Info\x12\x17.stock.StockInfoRequest\x1a\x18.stock.StockInfoResponse\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/v1/stock/info/{sku}B\x10Z\x0e/pkg/api/stockb\x06proto3"
+	"\x05count\x18\x01 \x01(\x04R\x05count2]\n" +
+	"\x05Stock\x12T\n" +
+	"\x04Info\x12\x17.stock.StockInfoRequest\x1a\x18.stock.StockInfoResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/stock/info/{sku}B\x10Z\x0e/pkg/api/stockb\x06proto3"
 
 var (
 	file_stock_proto_rawDescOnce sync.Once

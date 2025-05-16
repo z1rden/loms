@@ -84,7 +84,7 @@ func RegisterStockHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/stock.Stock/Info", runtime.WithHTTPPathPattern("/v1/stock/info/{sku}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/stock.Stock/Info", runtime.WithHTTPPathPattern("/stock/info/{sku}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -142,7 +142,7 @@ func RegisterStockHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/stock.Stock/Info", runtime.WithHTTPPathPattern("/v1/stock/info/{sku}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/stock.Stock/Info", runtime.WithHTTPPathPattern("/stock/info/{sku}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -159,7 +159,7 @@ func RegisterStockHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Stock_Info_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "stock", "info", "sku"}, ""))
+	pattern_Stock_Info_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"stock", "info", "sku"}, ""))
 )
 
 var (

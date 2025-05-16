@@ -1,6 +1,9 @@
 package order_storage
 
-import "context"
+import (
+	"context"
+	"loms/internal/loms/model"
+)
 
 func (s *storage) Create(ctx context.Context, userID int64, items []*Item) (int64, error) {
 	s.Lock()
@@ -10,10 +13,21 @@ func (s *storage) Create(ctx context.Context, userID int64, items []*Item) (int6
 		OrderID: s.getNextID(),
 		UserID:  userID,
 		Items:   items,
-		Status:  "new",
+		Status:  model.OrderStatusNew,
 	}
 
 	s.orders[order.OrderID] = order
 
 	return order.OrderID, nil
+}
+
+func (s *storage) getNextID() int64 {
+	var maxID int64
+	for orderID := range s.orders {
+		if orderID > maxID {
+			maxID = orderID
+		}
+	}
+	maxID++
+	return maxID
 }
