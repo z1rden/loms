@@ -9,6 +9,9 @@ import (
 
 type Service interface {
 	Create(ctx context.Context, userID int64, items []*model.Item) (int64, error)
+	Info(ctx context.Context, orderID int64) (*model.Order, error)
+	Cancel(ctx context.Context, orderID int64) error
+	Pay(ctx context.Context, orderID int64) error
 }
 
 type service struct {

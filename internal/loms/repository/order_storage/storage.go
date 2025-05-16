@@ -6,8 +6,9 @@ import (
 )
 
 type Storage interface {
-	Create(ctx context.Context, userID int64, items []*Item) (int64, error)
-	SetStatus(ctx context.Context, userID int64, status string) error
+	Create(ctx context.Context, orderID int64, items []*Item) (int64, error)
+	SetStatus(ctx context.Context, orderID int64, status string) error
+	GetByID(ctx context.Context, orderID int64) (*Order, error)
 }
 
 type storage struct {

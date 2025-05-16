@@ -11,6 +11,8 @@ import (
 type Storage interface {
 	Reserve(ctx context.Context, items []*ReserveItem) error
 	GetBySku(ctx context.Context, SkuID int64) (uint16, error)
+	ReserveCancel(ctx context.Context, items []*ReserveItem) error
+	ReserveRemove(ctx context.Context, items []*ReserveItem) error
 }
 
 type storage struct {

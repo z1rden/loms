@@ -11,7 +11,7 @@ func (s *service) Create(ctx context.Context, userID int64, items []*model.Item)
 		return 0, err
 	}
 
-	if err := s.stockStorage.Reserve(ctx, ToStockStorageItems(ctx, items)); err != nil {
+	if err := s.stockStorage.Reserve(ctx, ToStockStorageItems(items)); err != nil {
 		if err := s.orderStorage.SetStatus(ctx, orderID, model.OrderStatusFailed); err != nil {
 			return 0, err
 		}

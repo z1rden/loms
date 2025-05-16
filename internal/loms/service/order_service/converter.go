@@ -1,7 +1,6 @@
 package order_service
 
 import (
-	"context"
 	"loms/internal/loms/model"
 	"loms/internal/loms/repository/order_storage"
 	"loms/internal/loms/repository/stock_storage"
@@ -23,18 +22,43 @@ func toOrderStorageItem(item *model.Item) *order_storage.Item {
 	}
 }
 
-func toStockStorageItem(ctx context.Context, item *model.Item) *stock_storage.ReserveItem {
+func toStockStorageItem(item *model.Item) *stock_storage.ReserveItem {
 	return &stock_storage.ReserveItem{
 		SkuID:    item.SkuID,
 		Quantity: item.Quantity,
 	}
 }
 
-func ToStockStorageItems(ctx context.Context, items []*model.Item) []*stock_storage.ReserveItem {
+func ToStockStorageItems(items []*model.Item) []*stock_storage.ReserveItem {
 	reserveItems := make([]*stock_storage.ReserveItem, 0, len(items))
 	for _, item := range items {
-		reserveItems = append(reserveItems, toStockStorageItem(ctx, item))
+		reserveItems = append(reserveItems, toStockStorageItem(item))
 	}
 
 	return reserveItems
+}
+
+func toModelItem(item *order_storage.Item) *model.Item {
+	return &model.Item{
+		SkuID:    item.SkuID,
+		Quantity: item.Quantity,
+	}
+}
+
+func toModelItems(items []*order_storage.Item) []*model.Item {
+	res := make([]*model.Item, 0, len(items))
+	for _, item := range items {
+		res = append(res, toModelItem(item))
+	}
+
+	return res
+}
+
+func ToModelOrder(order *order_storage.Order) *model.Order {
+	return &model.Order{
+		OrderID: order.OrderID,
+		User:    order.UserID,
+		Status:  order.Status,
+		Items:   toModelItems(order.Items),
+	}
 }

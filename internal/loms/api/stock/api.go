@@ -11,6 +11,7 @@ import (
 type API interface {
 	RegisterGrpcServer(s *grpc.Server)
 	RegisterHttpHandlers(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
+	Info(ctx context.Context, r *stock.StockInfoRequest) (*stock.StockInfoResponse, error)
 }
 
 type api struct {

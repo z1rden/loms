@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"loms/internal/loms/service/order_service"
 	"loms/pkg/api/order"
 )
@@ -11,6 +12,10 @@ import (
 type API interface {
 	RegisterGrpcServer(s *grpc.Server)
 	RegisterHttpHandlers(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
+	Create(ctx context.Context, r *order.OrderCreateRequest) (*order.OrderCreateResponse, error)
+	Info(ctx context.Context, r *order.OrderInfoRequest) (*order.OrderInfoResponse, error)
+	Cancel(ctx context.Context, r *order.OrderCancelRequest) (*emptypb.Empty, error)
+	Pay(ctx context.Context, r *order.OrderPayRequest) (*emptypb.Empty, error)
 }
 
 type api struct {
