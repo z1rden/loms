@@ -1,9 +1,9 @@
 package closer_test
 
 import (
-	"cart/internal/cart/closer"
 	"errors"
 	"github.com/stretchr/testify/assert"
+	"loms/internal/loms/closer"
 	"os"
 	"testing"
 )

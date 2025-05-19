@@ -114,3 +114,18 @@ PHONY: .stock-api-generate
 
 .PHONY: generate-apis
 generate-apis: .stock-api-generate .order-api-generate
+
+PHONY: .bin-mock
+.bin-mock:
+	$(info Installing mockery...)
+	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v3@v3.2.5
+
+PHONY: mocks
+mocks:
+	$(info Generate mocks...)
+	$(LOCAL_BIN)/mockery
+
+PHONY: test
+test:
+	$(info Run tests...)
+	go test -v -race ./...

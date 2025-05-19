@@ -2,11 +2,11 @@ package core
 
 import (
 	"context"
+	"loms/internal/loms/config"
 	"loms/internal/loms/grpc_server"
 	"loms/internal/loms/http_server"
+	"loms/internal/loms/logger"
 	"loms/internal/loms/service_provider"
-	"loms/pkg/config"
-	"loms/pkg/logger"
 )
 
 type Service interface {

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"loms/internal/loms/core"
-	"loms/pkg/logger"
+	"loms/internal/loms/logger"
 )
 
 func main() {

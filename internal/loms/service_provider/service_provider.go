@@ -2,7 +2,7 @@ package service_provider
 
 import (
 	"context"
-	"loms/pkg/closer"
+	"loms/internal/loms/closer"
 )
 
 type ServiceProvider struct {

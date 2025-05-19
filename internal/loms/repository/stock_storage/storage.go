@@ -3,7 +3,7 @@ package stock_storage
 import (
 	"context"
 	"encoding/json"
-	"loms/pkg/logger"
+	"loms/internal/loms/logger"
 	"os"
 	"sync"
 )

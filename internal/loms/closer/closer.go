@@ -2,7 +2,7 @@ package closer
 
 import (
 	"context"
-	"loms/pkg/logger"
+	"loms/internal/loms/logger"
 	"os"
 	"os/signal"
 	"sync"
