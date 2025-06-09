@@ -12,7 +12,7 @@ type Config struct {
 }
 
 func MustLoad() *Config {
-	configPath := "./config/config.yaml"
+	configPath := "./config/config_loms.yaml"
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		panic("config path does not exist: " + configPath)
 	}

@@ -1,8 +1,18 @@
 # Используется bin в текущей директории для установки плагинов protoc
 LOCAL_BIN:=$(CURDIR)/bin
 
-PHONY: .proto-generate
-.proto-generate: .bin-proto .vendor-proto  .order-api-generate .stock-api-generate
+run:
+	go run ./cmd/loms
+
+build:
+	go build -o ./bin/loms ./cmd/loms
+
+.PHONY: genproto
+genproto: .proto-generate
+	go mod tidy
+
+.PHONY: .proto-generate
+.proto-generate: .bin-proto .vendor-proto  .order-api-generate .stock-api-generate .merge-swagger
 
 # https://github.com/grpc-ecosystem/grpc-gateway?tab=readme-ov-file
 # https://grpc.io/docs/languages/go/quickstart/
@@ -13,7 +23,7 @@ PHONY: .proto-generate
     GOBIN=$(LOCAL_BIN) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1 && \
 	GOBIN=$(LOCAL_BIN) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@v2.26.3 && \
 	GOBIN=$(LOCAL_BIN) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.26.3 && \
-	GOBIN=$(LOCAL_BIN) go install github.com/go-swagger/go-swagger/cmd/swagger@v0.31
+	GOBIN=$(LOCAL_BIN) go install github.com/g3co/go-swagger-merger@v0.3.0
 
 .vendor-proto: .vendor-rm  vendor-proto/google/protobuf vendor-proto/buf/validate vendor-proto/google/api vendor-proto/protoc-gen-openapiv2/options
 	go mod tidy
@@ -33,7 +43,7 @@ vendor-proto/google/protobuf:
 	mv vendor-proto/protobuf/src/google/protobuf vendor-proto/google
 	rm -rf vendor-proto/protobuf
 
-# Устанавливаем proto описания buf/validate для protovalidate
+# Устанавливается proto описания buf/validate для protovalidate
 vendor-proto/buf/validate:
 	git clone -b main --single-branch --depth=1 --filter=tree:0 \
 		https://github.com/bufbuild/protovalidate vendor-proto/tmp && \
@@ -83,12 +93,10 @@ PHONY: .order-api-generate
 	--plugin=protoc-gen-grpc-gateway=$(LOCAL_BIN)/protoc-gen-grpc-gateway \
 	--grpc-gateway_out pkg/${ORDER_API_PROTO_PATH} \
 	--grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true \
+	--plugin=protoc-gen-openapiv2=$(LOCAL_BIN)/protoc-gen-openapiv2 \
+    --openapiv2_out pkg/${ORDER_API_PROTO_PATH} \
+    --openapiv2_opt logtostderr=true \
 	${ORDER_API_PROTO_PATH}/*.proto
-	#--plugin=protoc-gen-openapiv2=$(LOCAL_BIN)/protoc-gen-openapiv2 \
-    #--openapiv2_out pkg/${ORDER_API_PROTO_PATH} \
-    #--openapiv2_opt logtostderr=true \
-	
-
 
 STOCK_API_PROTO_PATH:=api/stock
 PHONY: .stock-api-generate
@@ -107,10 +115,19 @@ PHONY: .stock-api-generate
 	--plugin=protoc-gen-grpc-gateway=$(LOCAL_BIN)/protoc-gen-grpc-gateway \
 	--grpc-gateway_out pkg/${STOCK_API_PROTO_PATH} \
 	--grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true \
+	--plugin=protoc-gen-openapiv2=$(LOCAL_BIN)/protoc-gen-openapiv2 \
+    --openapiv2_out pkg/${STOCK_API_PROTO_PATH} \
+    --openapiv2_opt logtostderr=true \
 	${STOCK_API_PROTO_PATH}/*.proto
-	#--plugin=protoc-gen-openapiv2=$(LOCAL_BIN)/protoc-gen-openapiv2 \
-    #--openapiv2_out pkg/${STOCK_API_PROTO_PATH} \
-    #--openapiv2_opt logtostderr=true \
+
+PHONY: .merge-swagger
+.merge-swagger:
+	rm -rf pkg/swagger
+	mkdir -p pkg/swagger
+	$(LOCAL_BIN)/go-swagger-merger \
+	-o pkg/swagger/swagger.json \
+	pkg/${ORDER_API_PROTO_PATH}/order.swagger.json \
+	pkg/${STOCK_API_PROTO_PATH}/stock.swagger.json
 
 .PHONY: generate-apis
 generate-apis: .stock-api-generate .order-api-generate
@@ -128,4 +145,4 @@ mocks:
 PHONY: test
 test:
 	$(info Run tests...)
-	go test -v -race ./...
+	go test -v -race

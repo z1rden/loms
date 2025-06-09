@@ -421,7 +421,7 @@ var File_order_proto protoreflect.FileDescriptor
 
 const file_order_proto_rawDesc = "" +
 	"\n" +
-	"\vorder.proto\x12\x05order\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a,protoc-gen-openapiv2/options/openapiv2.proto\x1a\x1bbuf/validate/validate.proto\"\xb3\x01\n" +
+	"\vorder.proto\x12\x05order\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1bbuf/validate/validate.proto\"\xb3\x01\n" +
 	"\x12OrderCreateRequest\x12\x1b\n" +
 	"\x04user\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\x04user\x12>\n" +
 	"\x05items\x18\x02 \x03(\v2\x1e.order.OrderCreateRequest.ItemB\b\xbaH\x05\x92\x01\x02\b\x01R\x05items\x1a@\n" +
@@ -448,7 +448,10 @@ const file_order_proto_rawDesc = "" +
 	"\x04Info\x12\x17.order.OrderInfoRequest\x1a\x18.order.OrderInfoResponse\"\x1e\x82\xd3\xe4\x93\x02\x18\x12\x16/order/info/{order_id}\x12U\n" +
 	"\x06Cancel\x12\x19.order.OrderCancelRequest\x1a\x16.google.protobuf.Empty\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/order/cancel\x12L\n" +
 	"\x03Pay\x12\x16.order.OrderPayRequest\x1a\x16.google.protobuf.Empty\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
-	"/order/payB\x10Z\x0e/pkg/api/orderb\x06proto3"
+	"/order/payBp\x92A]\x12\x12\n" +
+	"\tOrder API2\x051.0.0*\x02\x01\x022\x10application/json:\x10application/jsonZ\x1f\n" +
+	"\x1d\n" +
+	"\x06x-auth\x12\x13\b\x02\x1a\rauthorization \x02Z\x0e/pkg/api/orderb\x06proto3"
 
 var (
 	file_order_proto_rawDescOnce sync.Once

@@ -4,10 +4,34 @@ package order;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
-import "protoc-gen-openapiv2/options/openapiv2.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 import "buf/validate/validate.proto";
 
 option go_package = "/pkg/api/order";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  // Базовые метаданные API
+  info: {
+    title: "Order API";
+    version: "1.0.0";
+  };
+  // Схемы подключения, позволяющие вызовы API через HTTP и HTTPS.
+  schemes: HTTP;
+  schemes: HTTPS;
+  consumes: "application/json"; // API принимает только application/json
+  produces: "application/json"; // API возвращает только application/json
+  // Настройка аутентификации
+  security_definitions: {
+    security: {
+      key: "x-auth"; // Идентификатор схемы (используется для пометки защищенных методов)
+      value: {
+        type: TYPE_API_KEY; // Тип
+        in: IN_HEADER; // Расположение в HTTP-заголовке
+        name: "authorization"; // Имя заголовка
+      }
+    }
+  }
+};
 
 service Order {
   rpc Create(OrderCreateRequest) returns (OrderCreateResponse) {

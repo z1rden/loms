@@ -1,13 +1,16 @@
 package http_server
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"io"
 	"net/http"
+	"os"
 )
 
 type API interface {
@@ -47,6 +50,11 @@ func NewServer(ctx context.Context, httpPort string, grpcPort string) (Server, e
 		Handler: s.mux,
 	}
 
+	s.mux.HandleFunc("/swagger.json", s.handleSwagger)
+
+	fs := http.FileServer(http.Dir("pkg/swagger-ui"))
+	s.mux.Handle("/docs/", http.StripPrefix("/docs/", fs))
+
 	s.mux.Handle("/", s.gatewayMux)
 
 	return s, nil
@@ -81,4 +89,14 @@ func (s *server) RegisterApi(api []API) error {
 	}
 
 	return nil
+}
+
+func (s *server) handleSwagger(w http.ResponseWriter, req *http.Request) {
+	file, err := os.Open("pkg/swagger/swagger.json")
+	if err != nil {
+		http.Error(w, "swagger not found", http.StatusNotFound)
+	}
+	defer file.Close()
+	reader := bufio.NewReader(file)
+	io.Copy(w, reader)
 }

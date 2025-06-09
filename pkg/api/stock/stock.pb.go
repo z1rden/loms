@@ -117,13 +117,16 @@ var File_stock_proto protoreflect.FileDescriptor
 
 const file_stock_proto_rawDesc = "" +
 	"\n" +
-	"\vstock.proto\x12\x05stock\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bbuf/validate/validate.proto\x1a,protoc-gen-openapiv2/options/openapiv2.proto\"0\n" +
+	"\vstock.proto\x12\x05stock\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bbuf/validate/validate.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"0\n" +
 	"\x10StockInfoRequest\x12\x1c\n" +
 	"\x03sku\x18\x01 \x01(\x03B\a\xbaH\x04\"\x02 \x00R\x06sku_id\")\n" +
 	"\x11StockInfoResponse\x12\x14\n" +
 	"\x05count\x18\x01 \x01(\x04R\x05count2]\n" +
 	"\x05Stock\x12T\n" +
-	"\x04Info\x12\x17.stock.StockInfoRequest\x1a\x18.stock.StockInfoResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/stock/info/{sku}B\x10Z\x0e/pkg/api/stockb\x06proto3"
+	"\x04Info\x12\x17.stock.StockInfoRequest\x1a\x18.stock.StockInfoResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/stock/info/{sku}Bp\x92A]\x12\x12\n" +
+	"\tStock API2\x051.0.0*\x02\x01\x022\x10application/json:\x10application/jsonZ\x1f\n" +
+	"\x1d\n" +
+	"\x06x-auth\x12\x13\b\x02\x1a\rauthorization \x02Z\x0e/pkg/api/stockb\x06proto3"
 
 var (
 	file_stock_proto_rawDescOnce sync.Once
