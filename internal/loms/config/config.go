@@ -6,9 +6,11 @@ import (
 )
 
 type Config struct {
-	AppName  string `yaml:"app_name"`
-	HttpPort string `yaml:"http_port"`
-	GrpcPort string `yaml:"grpc_port"`
+	AppName     string `yaml:"app_name"`
+	HttpPort    string `yaml:"http_port"`
+	GrpcPort    string `yaml:"grpc_port"`
+	MasterDBURL string `yaml:"master_db_url"`
+	SyncDBURL   string `yaml:"sync_db_url"`
 }
 
 func MustLoad() *Config {

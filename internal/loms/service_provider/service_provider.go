@@ -3,6 +3,7 @@ package service_provider
 import (
 	"context"
 	"loms/internal/loms/closer"
+	"loms/internal/loms/config"
 )
 
 type ServiceProvider struct {
@@ -10,13 +11,16 @@ type ServiceProvider struct {
 	service    service
 	closer     closer.Closer
 	api        api
+	cfg        *config.Config
 }
 
 var serviceProvider *ServiceProvider
 
-func GetServiceProvider(ctx context.Context) *ServiceProvider {
+func GetServiceProvider(ctx context.Context, cfg *config.Config) *ServiceProvider {
 	if serviceProvider == nil {
-		serviceProvider = &ServiceProvider{}
+		serviceProvider = &ServiceProvider{
+			cfg: cfg,
+		}
 	}
 
 	return serviceProvider

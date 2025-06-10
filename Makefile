@@ -77,7 +77,7 @@ vendor-proto/protoc-gen-openapiv2/options:
 	rm -rf vendor-proto/grpc-ecosystem
 
 ORDER_API_PROTO_PATH:=api/order
-PHONY: .order-api-generate
+.PHONY: .order-api-generate
 .order-api-generate:
 	rm -rf pkg/${ORDER_API_PROTO_PATH}
 	mkdir -p pkg/${ORDER_API_PROTO_PATH}
@@ -99,7 +99,7 @@ PHONY: .order-api-generate
 	${ORDER_API_PROTO_PATH}/*.proto
 
 STOCK_API_PROTO_PATH:=api/stock
-PHONY: .stock-api-generate
+.PHONY: .stock-api-generate
 .stock-api-generate:
 	rm -rf pkg/${STOCK_API_PROTO_PATH}
 	mkdir -p pkg/${STOCK_API_PROTO_PATH}
@@ -120,7 +120,7 @@ PHONY: .stock-api-generate
     --openapiv2_opt logtostderr=true \
 	${STOCK_API_PROTO_PATH}/*.proto
 
-PHONY: .merge-swagger
+.PHONY: .merge-swagger
 .merge-swagger:
 	rm -rf pkg/swagger
 	mkdir -p pkg/swagger
@@ -132,17 +132,53 @@ PHONY: .merge-swagger
 .PHONY: generate-apis
 generate-apis: .stock-api-generate .order-api-generate
 
-PHONY: .bin-mock
+.PHONY: .bin-mock
 .bin-mock:
 	$(info Installing mockery...)
 	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v3@v3.2.5
 
-PHONY: mocks
+.PHONY: mocks
 mocks:
 	$(info Generate mocks...)
 	$(LOCAL_BIN)/mockery
 
-PHONY: test
+.PHONY: test
 test:
 	$(info Run tests...)
 	go test -v -race
+
+
+
+
+GOOSE_DRIVER=postgres
+GOOSE_DBSTRING_1="host=localhost port=54321 user=postgres password=postgres dbname=loms sslmode=disable"
+GOOSE_DBSTRING_2="host=localhost port=54322 user=postgres password=postgres dbname=loms sslmode=disable"
+GOOSE_MIGRATION_DIR=./migrations
+
+.PHONY: .bin-goose
+.bin-goose:
+	$(info Installing goose...)
+	GOBIN=$(LOCAL_BIN) go install github.com/pressly/goose/v3/cmd/goose@latest
+
+.create-migration:
+	goose -s -dir "./migrations" create create_table_stock sql
+
+migrate-up: .bin-goose
+	$(LOCAL_BIN)/goose -dir $(GOOSE_MIGRATION_DIR) $(GOOSE_DRIVER) $(GOOSE_DBSTRING_1) up
+	$(LOCAL_BIN)/goose -dir $(GOOSE_MIGRATION_DIR) $(GOOSE_DRIVER) $(GOOSE_DBSTRING_2) up
+
+migrate-down: .bin-goose
+	$(LOCAL_BIN)/goose -dir $(GOOSE_MIGRATION_DIR) $(GOOSE_DRIVER) $(GOOSE_DBSTRING_1) down
+	$(LOCAL_BIN)/goose -dir $(GOOSE_MIGRATION_DIR) $(GOOSE_DRIVER) $(GOOSE_DBSTRING_2) down
+
+migrate-status: .bin-goose
+	$(LOCAL_BIN)/goose -dir $(GOOSE_MIGRATION_DIR) $(GOOSE_DRIVER) $(GOOSE_DBSTRING_1) status
+	$(LOCAL_BIN)/goose -dir $(GOOSE_MIGRATION_DIR) $(GOOSE_DRIVER) $(GOOSE_DBSTRING_2) status
+
+.PHONY: .bin-sqlc
+.bin-sqlc:
+	$(info Installing goose...)
+	GOBIN=$(LOCAL_BIN) go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
+gensqlc: .bin-sqlc
+	$(LOCAL_BIN)/sqlc generate

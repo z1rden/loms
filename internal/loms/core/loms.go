@@ -20,15 +20,15 @@ type service struct {
 }
 
 func NewService(ctx context.Context) Service {
+	cfg := config.MustLoad()
+	logger.WithNameApp(ctx, cfg.AppName)
+
 	ctx, cancel := context.WithCancel(context.Background())
-	serviceProvider := service_provider.GetServiceProvider(ctx)
+	serviceProvider := service_provider.GetServiceProvider(ctx, cfg)
 	serviceProvider.GetCloser(ctx).Add(func() error {
 		cancel()
 		return nil
 	})
-
-	cfg := config.MustLoad()
-	logger.WithNameApp(ctx, cfg.AppName)
 
 	return &service{
 		ctx:             ctx,

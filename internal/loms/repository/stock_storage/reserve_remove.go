@@ -2,31 +2,49 @@ package stock_storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/jackc/pgx/v5"
+	"loms/internal/loms/model"
+	"loms/internal/loms/repository/stock_storage/sqlc"
 )
 
 func (s *storage) ReserveRemove(ctx context.Context, items []*ReserveItem) error {
-	s.Lock()
-	defer s.Unlock()
+	pool := s.dbClient.GetWriterPool()
+	err := pool.BeginFunc(ctx, func(tx pgx.Tx) error {
+		queries := sqlc.New(pool).WithTx(tx)
 
-	for _, item := range items {
-		storageItem, exists := s.items[item.SkuID]
-		if !exists {
-			return fmt.Errorf("sku id %d does not exist", item.SkuID)
+		for _, item := range items {
+			storageItem, err := queries.GetBySku(ctx, item.SkuID)
+			if err != nil {
+				if errors.Is(err, pgx.ErrNoRows) {
+					return model.ErrNotFound
+				}
+
+				return err
+			}
+
+			if storageItem.TotalCount < int32(item.Quantity) {
+				return fmt.Errorf("insufficient stock for product fro sku %d", item.SkuID)
+			}
+
+			if storageItem.Reserved < int32(item.Quantity) {
+				return fmt.Errorf("insufficient reserve for product for sku %d", item.SkuID)
+			}
+
+			err = queries.ReserveRemove(ctx, sqlc.ReserveRemoveParams{
+				SkuID:    item.SkuID,
+				Reserved: int32(item.Quantity),
+			})
+			if err != nil {
+				return fmt.Errorf("failed to remove reserve for sku %d: %w", item.SkuID, err)
+			}
 		}
 
-		if storageItem.Reserved < item.Quantity {
-			return fmt.Errorf("reserved %d < %d", storageItem.Reserved, item.Quantity)
-		}
-
-		if storageItem.TotalCount < item.Quantity {
-			return fmt.Errorf("total count %d < %d", storageItem.TotalCount, item.Quantity)
-		}
-	}
-
-	for _, item := range items {
-		s.items[item.SkuID].TotalCount -= item.Quantity
-		s.items[item.SkuID].Reserved -= item.Quantity
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to remove reserve: %w", err)
 	}
 
 	return nil
