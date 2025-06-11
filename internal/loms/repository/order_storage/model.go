@@ -8,6 +8,7 @@ type Order struct {
 }
 
 type Item struct {
+	ID       int64
 	SkuID    int64
 	Quantity uint16
 }

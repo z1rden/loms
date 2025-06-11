@@ -2,6 +2,7 @@ package service_provider
 
 import (
 	"context"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"loms/internal/loms/db"
 	"loms/internal/loms/logger"
 	"loms/internal/loms/repository/order_storage"
@@ -9,28 +10,28 @@ import (
 )
 
 type repository struct {
-	dbCLient     db.Client
+	dbClient     db.Client
 	orderStorage order_storage.Storage
 	stockStorage stock_storage.Storage
 }
 
 func (s *ServiceProvider) GetDBClient(ctx context.Context) db.Client {
-	if s.repository.dbCLient == nil {
+	if s.repository.dbClient == nil {
 		var err error
-		s.repository.dbCLient, err = db.NewClient(ctx, s.cfg.MasterDBURL, s.cfg.SyncDBURL)
+		s.repository.dbClient, err = db.NewClient(ctx, s.cfg.MasterDBURL, s.cfg.SyncDBURL)
 		if err != nil {
 			logger.Fatalf(ctx, "failed to create db client: %v", err)
 		}
 
-		s.GetCloser(ctx).Add(s.repository.dbCLient.Close)
+		s.GetCloser(ctx).Add(s.repository.dbClient.Close)
 	}
 
-	return s.repository.dbCLient
+	return s.repository.dbClient
 }
 
 func (s *ServiceProvider) GetOrderStorage(ctx context.Context) order_storage.Storage {
 	if s.repository.orderStorage == nil {
-		s.repository.orderStorage = order_storage.NewStorage(ctx)
+		s.repository.orderStorage = order_storage.NewStorage(ctx, s.GetDBClient(ctx))
 	}
 
 	return s.repository.orderStorage

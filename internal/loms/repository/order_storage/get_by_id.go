@@ -2,17 +2,39 @@ package order_storage
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"github.com/jackc/pgx/v5"
 	"loms/internal/loms/model"
+	"loms/internal/loms/repository/order_storage/sqlc"
 )
 
 func (s *storage) GetByID(ctx context.Context, orderID int64) (*Order, error) {
-	s.RLock()
-	defer s.RUnlock()
+	pool := s.dbClient.GetReaderPool()
+	queries := sqlc.New(pool)
 
-	order, exists := s.orders[orderID]
-	if !exists {
-		return nil, model.ErrNotFound
+	order, err := queries.GetOrderByOrderID(ctx, orderID)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, model.ErrNotFound
+		}
+
+		return nil, fmt.Errorf("failed to select order %d: %w", orderID, err)
 	}
 
-	return order, nil
+	items, err := queries.GetOrderItemsByOrderID(ctx, orderID)
+	if err != nil {
+		if !errors.Is(err, pgx.ErrNoRows) {
+			return nil, model.ErrNotFound
+		}
+
+		return nil, fmt.Errorf("failed to select order items from order %d: %w", orderID, err)
+	}
+
+	return &Order{
+		OrderID: order.OrderID,
+		UserID:  order.UserID,
+		Items:   toOrderItems(items),
+		Status:  string(order.Status),
+	}, nil
 }

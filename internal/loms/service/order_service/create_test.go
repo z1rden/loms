@@ -79,7 +79,7 @@ func TestServiceCreate(t *testing.T) {
 					Quantity: 1,
 				},
 			},
-			Status:                     model.OrderStatusAwatingPayment,
+			Status:                     model.OrderStatusAwaitingPayment,
 			OrderStorageSetStatusError: OrderStorageSetStatusError,
 			Error:                      OrderStorageSetStatusError,
 		},
@@ -92,7 +92,7 @@ func TestServiceCreate(t *testing.T) {
 					Quantity: 1,
 				},
 			},
-			Status: model.OrderStatusAwatingPayment,
+			Status: model.OrderStatusAwaitingPayment,
 		},
 	}
 

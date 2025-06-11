@@ -2,7 +2,7 @@ package order_storage
 
 import (
 	"context"
-	"sync"
+	"loms/internal/loms/db"
 )
 
 type Storage interface {
@@ -12,12 +12,13 @@ type Storage interface {
 }
 
 type storage struct {
-	sync.RWMutex
-	orders map[int64]*Order
+	ctx      context.Context
+	dbClient db.Client
 }
 
-func NewStorage(ctx context.Context) Storage {
+func NewStorage(ctx context.Context, dbClient db.Client) Storage {
 	return &storage{
-		orders: map[int64]*Order{},
+		ctx:      ctx,
+		dbClient: dbClient,
 	}
 }

@@ -1,11 +1,11 @@
 package model
 
 const (
-	OrderStatusNew            = "new"
-	OrderStatusAwatingPayment = "awaiting_payment"
-	OrderStatusPayed          = "payed"
-	OrderStatusCanceled       = "canceled"
-	OrderStatusFailed         = "failed"
+	OrderStatusNew             = "new"
+	OrderStatusAwaitingPayment = "awaiting_payment"
+	OrderStatusPayed           = "payed"
+	OrderStatusCanceled        = "cancelled"
+	OrderStatusFailed          = "failed"
 )
 
 type Item struct {

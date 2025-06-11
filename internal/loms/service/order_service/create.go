@@ -18,7 +18,7 @@ func (s *service) Create(ctx context.Context, userID int64, items []*model.Item)
 
 		return 0, err
 	} else {
-		if err := s.orderStorage.SetStatus(ctx, orderID, model.OrderStatusAwatingPayment); err != nil {
+		if err := s.orderStorage.SetStatus(ctx, orderID, model.OrderStatusAwaitingPayment); err != nil {
 			return 0, err
 		}
 	}

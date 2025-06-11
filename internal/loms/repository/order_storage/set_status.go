@@ -2,20 +2,21 @@ package order_storage
 
 import (
 	"context"
-	"loms/internal/loms/model"
+	"fmt"
+	"loms/internal/loms/repository/order_storage/sqlc"
 )
 
 func (s *storage) SetStatus(ctx context.Context, orderID int64, status string) error {
-	s.Lock()
-	defer s.Unlock()
+	pool := s.dbClient.GetWriterPool()
+	queries := sqlc.New(pool)
 
-	order, exists := s.orders[orderID]
-	if !exists {
-		return model.ErrNotFound
+	err := queries.UpdateStatusOrderByOrderID(ctx, sqlc.UpdateStatusOrderByOrderIDParams{
+		OrderID: orderID,
+		Status:  sqlc.OrderStatusType(status),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update order status for %d: %w", orderID, err)
 	}
 
-	order.Status = status
-
 	return nil
-
 }

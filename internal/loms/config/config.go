@@ -24,5 +24,17 @@ func MustLoad() *Config {
 		panic(err)
 	}
 
+	// TODO подумать, как красиво сделать с хостом
+	masterDBURL := os.Getenv("MASTER_DB_URL")
+	if masterDBURL != "" {
+		cfg.MasterDBURL = masterDBURL
+	}
+
+	// TODO подумать, как красиво сделать с хостом
+	syncDBURL := os.Getenv("SYNC_DB_URL")
+	if syncDBURL != "" {
+		cfg.SyncDBURL = syncDBURL
+	}
+
 	return &cfg
 }
