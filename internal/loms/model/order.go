@@ -8,6 +8,14 @@ const (
 	OrderStatusFailed          = "failed"
 )
 
+const (
+	EventOrderStatusChanged = "order_status_changed"
+)
+
+const (
+	EntityTypeOrder = "order"
+)
+
 type Item struct {
 	SkuID    int64
 	Quantity uint16
@@ -21,3 +29,7 @@ type Order struct {
 }
 
 type Orders map[int64]*Order
+type OrderChangeStatusMessageOrder struct {
+	OrderID int64  `json:"id"`
+	Status  string `json:"status"`
+}
