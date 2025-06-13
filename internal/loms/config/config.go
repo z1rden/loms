@@ -11,6 +11,7 @@ type Config struct {
 	GrpcPort    string `yaml:"grpc_port"`
 	MasterDBURL string `yaml:"master_db_url"`
 	SyncDBURL   string `yaml:"sync_db_url"`
+	KafkaAddr   string `yaml:"kafka_addr"`
 }
 
 func MustLoad() *Config {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"loms/internal/loms/closer"
 	"loms/internal/loms/config"
+	"loms/internal/loms/kafka"
 )
 
 type ServiceProvider struct {
@@ -12,6 +13,7 @@ type ServiceProvider struct {
 	closer     closer.Closer
 	api        api
 	cfg        *config.Config
+	producer   kafka.Producer
 }
 
 var serviceProvider *ServiceProvider

@@ -33,3 +33,57 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) er
 	)
 	return err
 }
+
+const getMessages = `-- name: GetMessages :many
+select message_id, created_at, updated_at, status, error, event, entity_type, entity_id, data
+from kafka_outbox
+where status = $1
+    for update skip locked
+`
+
+func (q *Queries) GetMessages(ctx context.Context, status NullMessageStatusType) ([]KafkaOutbox, error) {
+	rows, err := q.db.Query(ctx, getMessages, status)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []KafkaOutbox
+	for rows.Next() {
+		var i KafkaOutbox
+		if err := rows.Scan(
+			&i.MessageID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Status,
+			&i.Error,
+			&i.Event,
+			&i.EntityType,
+			&i.EntityID,
+			&i.Data,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateMessageStatus = `-- name: UpdateMessageStatus :exec
+update kafka_outbox
+set status = $1,
+    updated_at = now()
+where message_id = $2
+`
+
+type UpdateMessageStatusParams struct {
+	Status    NullMessageStatusType
+	MessageID pgtype.UUID
+}
+
+func (q *Queries) UpdateMessageStatus(ctx context.Context, arg UpdateMessageStatusParams) error {
+	_, err := q.db.Exec(ctx, updateMessageStatus, arg.Status, arg.MessageID)
+	return err
+}

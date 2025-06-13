@@ -84,5 +84,9 @@ func (s *service) Run() error {
 
 	closer.Add(logger.Close)
 
+	kafkaService := s.serviceProvider.GetKafkaService(s.ctx)
+	kafkaService.SendMessages(s.ctx)
+	closer.Add(kafkaService.StopSendMessages)
+
 	return nil
 }
