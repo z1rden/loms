@@ -33,7 +33,7 @@ func (s *ServiceProvider) GetKafkaService(ctx context.Context) kafka_service.Ser
 	if s.service.kafkaService == nil {
 		s.service.kafkaService = kafka_service.NewService(
 			s.GetKafkaStorage(ctx),
-			s.GetProducer(ctx),
+			s.GetKafkaProducer(ctx),
 		)
 	}
 	return s.service.kafkaService

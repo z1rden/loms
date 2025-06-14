@@ -2,7 +2,7 @@ package kafka_service
 
 import (
 	"context"
-	"loms/internal/loms/kafka"
+	"loms/internal/loms/kafka_producer"
 	"loms/internal/loms/repository/kafka_storage"
 	"sync"
 )
@@ -14,12 +14,12 @@ type Service interface {
 
 type service struct {
 	kafkaStorage    kafka_storage.Storage
-	kafkaProducer   kafka.Producer
+	kafkaProducer   kafka_producer.Producer
 	sendMessagesWG  sync.WaitGroup
 	sendMessageDone chan struct{}
 }
 
-func NewService(kafkaStorage kafka_storage.Storage, kafkaProducer kafka.Producer) Service {
+func NewService(kafkaStorage kafka_storage.Storage, kafkaProducer kafka_producer.Producer) Service {
 	return &service{
 		kafkaStorage:    kafkaStorage,
 		kafkaProducer:   kafkaProducer,
