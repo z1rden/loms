@@ -78,10 +78,10 @@ func (s *service) sendOrderStatusChangedMessage(ctx context.Context, message *sq
 
 	err = s.kafkaProducer.SendMessageWithKey(
 		ctx,
-		"loms.order-events",
+		s.cfg.Kafka.Topic.Name,
 		message.EntityID.String,
 		orderStatusChangedMessage,
-		"loms")
+		s.cfg.AppName)
 
 	if err != nil {
 		logger.Errorf(ctx, "failed to send OrderChangeStatusMessage: %v", err)

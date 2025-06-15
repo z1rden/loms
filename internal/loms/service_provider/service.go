@@ -34,6 +34,7 @@ func (s *ServiceProvider) GetKafkaService(ctx context.Context) kafka_service.Ser
 		s.service.kafkaService = kafka_service.NewService(
 			s.GetKafkaStorage(ctx),
 			s.GetKafkaProducer(ctx),
+			s.cfg,
 		)
 	}
 	return s.service.kafkaService
